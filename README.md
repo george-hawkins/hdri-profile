@@ -123,38 +123,38 @@ This looks a little stupid with our sample image that's already correctly orient
 ### The Exposure tab
 
 * &#x2705; Tick _Highlight reconstruction_ (this changes way more settings than just `HLRecovery` and gets us much closer to Greg's profile).
-* &#x2705; Go to the _L\*a\*b\* Adjustments_ section and enable its power icon (this corresponds to the `Luminance Curve` section in the profile file).
 * &#x274c; Go to the _Tone Mapping_ section, enable its power button, and change _Scale_ to 0.3.
+* &#x2705; Go to the _L\*a\*b\* Adjustments_ section and enable its power icon (this corresponds to the `Luminance Curve` section in the profile file).
 
 ### The Details tab
 
-* &#x2753; Go to the _Noise Reduction_ section and enable its power icon.
-  * In the _Chromiance_ subsection, change _Method_ to _Manual_ and change _Master_ to 4, _Red-Green_ to 3.6 and _Blue-Yellow_ to -1.9. And switch _Method_ back to _Automatic global_. This is another group of setting that I suspect is **redundant** because ultimately Greg switched back to _Automatic global_.
 * &#x274c; Go to the _Local Contrast_ section, enable its power button, and change _Radius_ to 40 and _Amount_ to 0.
+* &#x2705; Go to the _Noise Reduction_ section and enable its power icon.
+  * &#x274c; In the _Chromiance_ subsection, change _Method_ to _Manual_ and change _Master_ to 4, _Red-Green_ to 3.6 and _Blue-Yellow_ to -1.9. And switch _Method_ back to _Automatic global_. These changes are **redundant** because ultimately we switched back to the default _Automatic global_ (and so the _Master_ etc. changes are remembered but ignored).
 
 ### The Color tab
 
+* &#x2705; Go to the _White Balance_ section, set _Method_ to _Custom_ and change _Temperature_ to 5400 and _Tint_ to 1.1.
 * &#x2705; Go to the _Channel Mixer_ section and enable its power icon.
-* &#x2705; In the _White Balance_ section, set _Method_ to _Custom_ and change _Temperature_ to 5400 and _Tint_ to 1.1.
-* &#x2705; In the _Output Profile_ subsection of the _Color Management_ section, untick _Black Point Compensation_.
 * &#x2705; Go to the _HSV Equalizer_ section and enable its power icon.
 * &#x2705; Go to the _RGB Curves_ section and enable its power icon.
+* &#x2705; In the _Color Management_ section, go to the _Output Profile_ subsection and untick _Black Point Compensation_.
 
 ### The Transform tab
 
-Go to the _Profiled Lens Correction_ section. As the sample image is one of the known camera and lens combinations, the _Auto-matched correction parameters_ should be automatically selected. After confirming this:
-
-* &#x2705; Untick _Distortion correction_ and _Vignetting correction_.
-* &#x2705; Tick _Chromatic aberration  correction_.
-
-When we come to creating a profile that's suitable for the One X2, I think leaving this as _None_ is probably appropriate as the One X2 knows its own lens characteristics very well and takes them into account when stitching
-
-* &#x274c; Go to the _Crop_ section, enable its power icon, and enter 3457 for _Width_, 5194 for _Height_ and 3:2 for _Ratio_.
+* &#x274c; Go to the _Crop_ section, enable its power icon, leave 3457 and 5194 as the _Width_ and _Height_ and change the _As Image_ value (to the right of _Lock ratio_) to _3:2_.
 * &#x274c; Go to the _Resize_ section, enable its power icon, and change _Method_ to _Nearest_, change _Specify_ to _Scale_ and then the _Scale_ value to 1.
+* &#x2705; Go to the _Profiled Lens Correction_ section, select the _Auto-matched correction parameters_ option, and then:
+  * &#x2705; Untick _Distortion correction_ and _Vignetting correction_.
+  * &#x2705; Tick _Chromatic aberration  correction_.
+
+**Important:** when we come to creating a profile that's suitable for the One X2, leaving _Profiled Lens Correction_ as _None_ is probably appropriate as the One X2 knows its own lens characteristics very well and corrects for them when stitching
 
 ### The RAW tab
 
 * &#x2705; In the _Preprocessing_ section, tick _Hot pixel filter_ and _Dead pixed filter_.
+
+**Note:** it looks like there are two _Preprocessing_ sections in the _RAW_ tab but the first is actually just a subsection of _Sensor with Bayer Matrix_ section.
 
 Save and disable
 ----------------
@@ -174,10 +174,42 @@ Now, save the updated profile as "my-hdri-final".
 Remaining differences
 ---------------------
 
-If you diff the resulting `my-hdri-final.pp3` files with Greg's `HDRI.pp3` the remaining differences should be just:
+If you diff the resulting `my-hdri-final.pp3` files with Greg's `HDRI.pp3` there are just a few remaining differences:
 
-**TODO**
+```
+$ cp ~/.config/RawTherapee/profiles/my-hdri-final.pp3 .
+$ diff -w HDRI.pp3 my-hdri-final.pp3 
+267c267
+< H=5194
+---
+> H=5185
+294,295c294,295
+< LFCameraModel=Canon EOS 600D
+< LFLens=Canon Canon EF-S 10-18mm f/4.5-5.6 IS STM
+---
+> LFCameraModel=Canon EOS 1200D
+> LFLens=Canon Canon EF-S 18-55mm f/3.5-5.6 IS II
+521c521
+< SaturatedOpacity=1
+---
+> SaturatedOpacity=0
+533c533
+< DarkFrame=\\/szeva
+---
+> DarkFrame=/szeva
+535c535
+< FlatFieldFile=\\/szeva
+---
+> FlatFieldFile=/szeva
+```
 
-In the _Color_ tab:
+The `H` values are different as the sample image isn't exactly the same size as whatever image Greg was using. Similarly, the exact Canon camera model and lens are different. The `DarkFrame` and `FlatFieldFile` values are just different due to differences between Windows (where Greg's file was created) and Linux (where my file was created).
 
-* Go to the _Color Toning_ section and enable its power icon, this toggles both the sections `Enabled=true` and sets `SaturatedOpacity=1` (its `0` by default). When you toggle the power icon off `SaturatedOpacity` and `SatProtectionThreshold` get set to apparently random but irrelevant values (as the section is now again disabled). I couldn't find a way, to disable the section and leave the `SaturatedOpacity` set to `1` so, don't try this bit even if you're trying to exactly match Greg's profile.
+So, that leaves just one setting that's different and unaccounted for - the `SaturatedOpacity` value. It's in a section where `Enabled=false` so, it's ignored. To set it to `1`, go to the _Color_ tab, then to the _Color Toning_ section  and enable its power icon, this toggles both the section's `Enabled` value to `true` and sets `SaturatedOpacity=1`. However, when you toggle the power icon off `SaturatedOpacity` and `SatProtectionThreshold` get set to apparently random but irrelevant values (as the section is now again disabled). I couldn't find a way, to disable the section and leave the `SaturatedOpacity` set to `1` so, don't try this even if when trying to exactly match Greg's profile.
+
+Which settings actually matter?
+-------------------------------
+
+Some setting changes clearly don't matter as they're in sections where `Enabled=false`. However, some others are probably irrelevant too, e.g. toggle off _Highlight reconstruction_ or disable the various power icons that were enabled and see if you can notice a difference.
+
+**TODO:** take some One X2, HDRI shots (an outside one in sunlight, an indoors one when it's bright outside and an indoors one when it's dark outside) and see what difference, if any, _Highlight reconstruction_, _RGB Curves_ etc. make. I.e. create two profiles one with all these settings (i.e. the `my-hdri-final.pp3` as just created) and one without all the seemingly more pointless changes and save out tiffs using each and then compare to see if there are any noticeable differences. See also, Greg's [page](https://blog.polyhaven.com/how-to-create-high-quality-hdri/) where he discusses what he's trying to achieve with the profile and e.g. says "Enables Highlight Reconstruction – this should not be necessary and may even be a bad idea, but it can help avoid strange color artifacts in saturated over-exposed areas."
