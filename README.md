@@ -106,7 +106,7 @@ $ vimdiff neutral.pp3 HDRI.pp3
 
 So looking at the diff, let's go through the differences between RawTherapee's neutral profile and Greg's HDRI profile such that we eventually build up an identical profile.
 
-**Update:** it turns out that there are actually very few _real_ changes (there are various changes that don't actually take effect as the section they're in were enabled and later disabled again). As to the remaining _real_ changes, only a few of them are probably really relevant, e.g. the dead-pixel detection probably isn't make or break (unless it fixes pixels stuck high such that hey introduce rays of infinitely bright light). Completely pointless changes are marked below with a &#x274c;.
+**Update:** it turns out that there are actually very few _real_ changes (there are various changes that don't actually take effect as the section they're in were enabled and later disabled again). As to the remaining _real_ changes, only a few of them are probably really relevant, e.g. the dead-pixel detection probably isn't make or break (unless it fixes pixels stuck high such that they introduce rays of infinitely bright light). Completely pointless changes are marked below with a &#x274c;.
 
 ### The Preview area
 
@@ -118,7 +118,8 @@ This looks a little stupid with our sample image that's already correctly orient
 
 ### The Processing Profile tabs
 
-![tabs](images/tabs.png)
+![tabs](images/tabs-2x-xbr-upscaled.png)
+<!-- Upscaled using https://www.maxlaumeister.com/pixel-art-upscaler/ -->
 
 ### The Exposure tab
 
